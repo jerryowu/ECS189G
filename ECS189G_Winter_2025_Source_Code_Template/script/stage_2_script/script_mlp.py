@@ -14,10 +14,10 @@ if 1:
     torch.manual_seed(2)
     #------------------------------------------------------
 
-    # ---- objection initialization setction ---------------
-    data_obj = Dataset_Loader('toy', '')
+    # ---- objection initialization section ---------------
+    data_obj = Dataset_Loader('train', '')
     data_obj.dataset_source_folder_path = '../../data/stage_2_data/'
-    data_obj.dataset_source_file_name = 'toy_data_file.txt'
+    data_obj.dataset_source_file_name = 'train.csv'
 
     method_obj = Method_MLP('multi-layer perceptron', '')
 
