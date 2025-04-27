@@ -10,6 +10,8 @@ from local_code.stage_1_code.Evaluate_Accuracy import Evaluate_Accuracy
 import torch
 from torch import nn
 import numpy as np
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import matplotlib.pyplot as plt
 
 
 class Method_MLP(method, nn.Module):
@@ -18,6 +20,8 @@ class Method_MLP(method, nn.Module):
     max_epoch = 500
     # it defines the learning rate for gradient descent based optimizer for model learning
     learning_rate = 1e-3
+
+    loss_values = []  # List to store loss values
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -30,7 +34,7 @@ class Method_MLP(method, nn.Module):
         # check here for nn.ReLU doc: https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html
         self.activation_func_1 = nn.ReLU()
         self.fc_layer_2 = nn.Linear(128, 64)
-        self.fc_layer_3 = nn.Linear(64, 2)
+        self.fc_layer_2 = nn.Linear(64, 2)
         # check here for nn.Softmax doc: https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html
         self.activation_func_2 = nn.Softmax(dim=1)
 
@@ -79,6 +83,8 @@ class Method_MLP(method, nn.Module):
             # update the variables according to the optimizer and the gradients calculated by the above loss.backward function
             optimizer.step()
 
+            self.loss_values.append(train_loss.item())
+
             if epoch%100 == 0:
                 accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
                 print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Loss:', train_loss.item())
@@ -96,5 +102,20 @@ class Method_MLP(method, nn.Module):
         self.train(self.data['train']['X'], self.data['train']['y'])
         print('--start testing...')
         pred_y = self.test(self.data['test']['X'])
+        accuracy = accuracy_score(self.data['test']['y'], pred_y)
+        precision = precision_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        recall = recall_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        f1 = f1_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        print("accuracy: ", accuracy, ", precision: ", precision, ", recall: ", recall, ", f1: ", f1)
+        self.plot_training_loss(self.loss_values)
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
-            
+
+    def plot_training_loss(self, loss_values):
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(len(loss_values)), loss_values, label='Training Loss', color='blue')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.title('Model Training Loss Over Epochs')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
