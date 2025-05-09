@@ -10,8 +10,10 @@ from local_code.base_class.dataset import dataset
 
 class Dataset_Loader(dataset):
     data = None
-    dataset_source_folder_path = "../../data/stage_3_data"
-    dataset_source_file_name = "script_data_loader.py"
+    # dataset_source_folder_path = "../../data/stage_3_data"
+    # dataset_source_file_name = "script_data_loader.py"
+    dataset_source_folder_path = None
+    dataset_source_file_name = None
 
     def __init__(self, dName=None, dDescription=None):
         super().__init__(dName, dDescription)
