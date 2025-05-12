@@ -10,12 +10,16 @@ from local_code.stage_1_code.Evaluate_Accuracy import Evaluate_Accuracy
 import torch
 from torch import nn
 import numpy as np
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import matplotlib.pyplot as plt
 
 
 class Method_MLP(method, nn.Module):
     data = None
     max_epoch = 500
     learning_rate = 1e-3
+
+    loss_values = []  # List to store loss values
 
     def __init__(self, mName, mDescription):
         method.__init__(self, mName, mDescription)
@@ -29,7 +33,7 @@ class Method_MLP(method, nn.Module):
         self.activation_func_2 = nn.ReLU()
 
         # Assuming input images are 4x4 → after two conv + one 2x2 pool → output size 8 x 2 x 2
-        self.fc_layer = nn.Linear(8 * 2 * 2, 2)
+        self.fc_layer = nn.Linear(8 * 14 * 14, 10)
         self.activation_func_out = nn.Softmax(dim=1)
 
     def forward(self, x):
@@ -61,6 +65,8 @@ class Method_MLP(method, nn.Module):
             train_loss.backward()
             optimizer.step()
 
+            self.loss_values.append(train_loss.item())
+
             if epoch % 100 == 0:
                 accuracy_evaluator.data = {'true_y': y_tensor, 'pred_y': y_pred.max(1)[1]}
                 print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Loss:', train_loss.item())
@@ -78,4 +84,21 @@ class Method_MLP(method, nn.Module):
         self.train(self.data['train']['X'], self.data['train']['y'])
         print('--start testing...')
         pred_y = self.test(self.data['test']['X'])
+        pred_y = self.test(self.data['test']['X'])
+        accuracy = accuracy_score(self.data['test']['y'], pred_y)
+        precision = precision_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        recall = recall_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        f1 = f1_score(self.data['test']['y'], pred_y, average='macro', zero_division=1)
+        print("accuracy: ", accuracy, ", precision: ", precision, ", recall: ", recall, ", f1: ", f1)
+        self.plot_training_loss(self.loss_values)
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
+
+    def plot_training_loss(self, loss_values):
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(len(loss_values)), loss_values, label='Training Loss', color='blue')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.title('Model Training Loss Over Epochs')
+        plt.grid(True)
+        plt.legend()
+        plt.show()

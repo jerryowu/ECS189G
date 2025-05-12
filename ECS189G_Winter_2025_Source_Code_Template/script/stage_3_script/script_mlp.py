@@ -17,7 +17,7 @@ if 1:
     # ---- objection initialization section ---------------
     data_obj = Dataset_Loader('train', '')
     data_obj.dataset_source_folder_path = '../../data/stage_3_data/'
-    data_obj.dataset_source_file_name = 'CIFAR'
+    data_obj.dataset_source_file_name = 'MINST'
 
     method_obj = Method_MLP('multi-layer perceptron', '')
 

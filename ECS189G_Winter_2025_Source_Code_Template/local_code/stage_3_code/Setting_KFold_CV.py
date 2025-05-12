@@ -21,11 +21,11 @@ class Setting_KFold_CV(setting):
         
         fold_count = 0
         score_list = []
-        for train_index, test_index in kf.split(loaded_data['X']):
+        for train_index, test_index in kf.split(loaded_data['X_train']):
             fold_count += 1
             print('************ Fold:', fold_count, '************')
-            X_train, X_test = np.array(loaded_data['X'])[train_index], np.array(loaded_data['X'])[test_index]
-            y_train, y_test = np.array(loaded_data['y'])[train_index], np.array(loaded_data['y'])[test_index]
+            X_train, X_test = np.array(loaded_data['X_train'])[train_index], np.array(loaded_data['X_train'])[test_index]
+            y_train, y_test = np.array(loaded_data['y_train'])[train_index], np.array(loaded_data['y_train'])[test_index]
         
             # run MethodModule
             self.method.data = {'train': {'X': X_train, 'y': y_train}, 'test': {'X': X_test, 'y': y_test}}
