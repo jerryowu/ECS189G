@@ -25,16 +25,17 @@ class Method_MLP(method, nn.Module):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
-        # Define a simple CNN architecture
-        self.conv_layer_1 = nn.Conv2d(in_channels=1, out_channels=4, kernel_size=3, padding=1)
-        self.activation_func_1 = nn.ReLU()
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv_layer_2 = nn.Conv2d(in_channels=4, out_channels=8, kernel_size=3, padding=1)
-        self.activation_func_2 = nn.ReLU()
+        self.input_size = 10  # Number of input features per time step
+        self.hidden_size = 32  # Hidden state size
+        self.output_size = 10  # Number of output classes
 
-        # Assuming input images are 4x4 → after two conv + one 2x2 pool → output size 8 x 2 x 2
-        self.fc_layer = nn.Linear(8 * 14 * 14, 10)
+        self.rnn = nn.RNN(input_size=self.input_size,
+                          hidden_size=self.hidden_size,
+                          batch_first=True)
+        self.fc_layer = nn.Linear(self.hidden_size, self.output_size)
         self.activation_func_out = nn.Softmax(dim=1)
+
+        self.loss_values = []
 
     def forward(self, x):
         '''Forward propagation'''

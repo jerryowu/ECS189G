@@ -16,18 +16,16 @@ if 1:
 
     # ---- objection initialization section ---------------
     data_obj = Dataset_Loader('train', '')
-    data_obj.dataset_source_folder_path = '../../data/stage_3_data/'
-    data_obj.dataset_source_file_name = 'MNIST'
+    data_obj.dataset_source_folder_path = '../../data/stage_4_data/'
+    data_obj.dataset_source_file_name = 'text_classification'
 
     method_obj = Method_MLP('multi-layer perceptron', '')
 
     result_obj = Result_Saver('saver', '')
-    result_obj.result_destination_folder_path = '../../result/stage_3_result/MLP_'
+    result_obj.result_destination_folder_path = '../../result/stage_4_result/MLP_'
     result_obj.result_destination_file_name = 'prediction_result'
 
     setting_obj = Setting_KFold_CV('k fold cross validation', '')
-    #setting_obj = Setting_Tra
-    # in_Test_Split('train test split', '')
 
     evaluate_obj = Evaluate_Accuracy('accuracy', '')
     # ------------------------------------------------------

@@ -6,6 +6,7 @@ Concrete IO class for a specific dataset
 # License: TBD
 
 from local_code.base_class.dataset import dataset
+import os
 
 
 class Dataset_Loader(dataset):
@@ -18,13 +19,54 @@ class Dataset_Loader(dataset):
     
     def load(self):
         print('loading data...')
-        X = []
-        y = []
-        f = open(self.dataset_source_folder_path + self.dataset_source_file_name, 'r')
-        for line in f:
-            line = line.strip('\n')
-            elements = [int(i) for i in line.split(',')]
-            X.append(elements[:-1])
-            y.append(elements[-1])
-        f.close()
-        return {'X': X, 'y': y}
+
+        if self.dataset_source_file_name == "text_classification":
+            X_train = []
+            y_train = []
+            X_test = []
+            y_test = []
+            for filename in os.listdir(self.dataset_source_folder_path + "/train/pos/"):
+                file_path = os.path.join(self.dataset_source_folder_path + "/train/pos/", filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as f:
+                        contents = f.read()
+                        X_train.append(contents)
+                        y_train.append(1)
+
+            for filename in os.listdir(self.dataset_source_folder_path + "/train/neg/"):
+                file_path = os.path.join(self.dataset_source_folder_path + "/train/neg/", filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as f:
+                        contents = f.read()
+                        X_train.append(contents)
+                        y_train.append(0)
+
+            for filename in os.listdir(self.dataset_source_folder_path + "/test/pos/"):
+                file_path = os.path.join(self.dataset_source_folder_path + "/test/pos/", filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as f:
+                        contents = f.read()
+                        X_test.append(contents)
+                        y_test.append(1)
+
+            for filename in os.listdir(self.dataset_source_folder_path + "/test/neg/"):
+                file_path = os.path.join(self.dataset_source_folder_path + "/test/neg/", filename)
+                with open(file_path, 'r') as f:
+                    contents = f.read()
+                    X_test.append(contents)
+                    y_test.append(0)
+
+            return {'X_train': X_train, 'y_train': y_train, 'X_test': X_test, 'y_test': y_test}
+
+        elif self.dataset_source_file_name == "text_generation":
+            X = []
+
+            f = open(self.dataset_source_folder_path + self.dataset_source_file_name + "/data", 'r')
+            for line in f:
+                line = line.strip('\n')
+                X.append(line)
+            f.close()
+            return {'X': X}
+
+        ## if invalid input
+        return {}
