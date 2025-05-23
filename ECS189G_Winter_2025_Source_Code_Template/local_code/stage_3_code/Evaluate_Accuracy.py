@@ -19,9 +19,9 @@ class Evaluate_Accuracy(evaluate):
         
         # Calculate all metrics
         accuracy = accuracy_score(true_y, pred_y)
-        precision = precision_score(true_y, pred_y, average='binary')
-        recall = recall_score(true_y, pred_y, average='binary')
-        f1 = f1_score(true_y, pred_y, average='binary')
+        precision = precision_score(true_y, pred_y, average='weighted')
+        recall = recall_score(true_y, pred_y, average='weighted')
+        f1 = f1_score(true_y, pred_y, average='weighted')
         
         # Print all metrics
         print('Accuracy:', accuracy)
