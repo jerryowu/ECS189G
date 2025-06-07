@@ -5,7 +5,7 @@ Concrete IO class for a specific dataset
 # Copyright (c) 2017 Jiawei Zhang <jwzhanggy@gmail.com>
 # License: TBD
 
-from code.base_class.dataset import dataset
+from local_code.base_class.dataset import dataset
 import torch
 import numpy as np
 import scipy.sparse as sp
@@ -13,6 +13,7 @@ import scipy.sparse as sp
 class Dataset_Loader(dataset):
     data = None
     dataset_name = None
+    dataset_source_folder_path = None
 
     def __init__(self, seed=None, dName=None, dDescription=None):
         super(Dataset_Loader, self).__init__(dName, dDescription)
